@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Consistency Tracker PWA
 
-## Getting Started
+A personal habit tracking Progressive Web App with Google Sheets as the database.
 
-First, run the development server:
+## Features
+
+- Track 4 daily habits: LeetCode, Gym, Guitar, Family
+- Streak calculation (3+ habits = success)
+- Statistics dashboard
+- GitHub-style calendar heatmap
+- PWA installable on mobile
+- Dark mode design
+- Optimistic UI updates
+
+## Setup
+
+### 1. Google Sheets Setup
+
+1. Create a new Google Sheet
+2. Create a sheet named `daily_logs` with headers:
+   ```
+   Date | LeetCode | Gym | Guitar | Family | Score
+   ```
+3. In column F (Score), add formula: `=SUM(B2:E2)` and drag down
+
+### 2. Google Service Account
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com)
+2. Create a new project
+3. Enable Google Sheets API
+4. Create Service Account:
+   - Go to IAM & Admin > Service Accounts
+   - Create Service Account
+   - Download JSON key
+5. Share your Google Sheet with the service account email (found in JSON)
+
+### 3. Environment Variables
+
+Create `.env.local`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+GOOGLE_SHEET_ID=your_spreadsheet_id
+GOOGLE_SERVICE_ACCOUNT_BASE64=base64_encoded_json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To encode service account JSON:
+```bash
+cat service-account.json | base64
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Install & Run
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run dev
+```
 
-## Learn More
+Open http://localhost:3000
 
-To learn more about Next.js, take a look at the following resources:
+## Deploy to Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Push code to GitHub
+2. Import project in Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## PWA Installation
 
-## Deploy on Vercel
+On mobile, tap "Add to Home Screen" when prompted.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Architecture
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Data Layer**: Google Sheets (daily_logs sheet)
+- **Analytics**: Calculated in app (streak, consistency %)
+- **State**: React with optimistic updates
+- **API**: Next.js API routes
+
+## Adding New Habits
+
+1. Add column in Google Sheet
+2. Update `HabitName` type in `types/index.ts`
+3. Add habit to `habits` array in `components/Home.tsx`
+4. Update column mapping in `lib/googleSheets.ts`

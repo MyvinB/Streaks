@@ -33,6 +33,10 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# local files
+generate-leetcode-data.js
+streaks.png
+
 # vercel
 .vercel
 
