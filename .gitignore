@@ -35,7 +35,7 @@ yarn-error.log*
 
 # local files
 generate-leetcode-data.js
-streaks.png
+/streaks.png
 
 # vercel
 .vercel
