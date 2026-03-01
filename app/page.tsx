@@ -5,6 +5,7 @@ import { calculateStats, getTodayDate } from '@/lib/stats';
 import Home from '@/components/Home';
 import Stats from '@/components/Stats';
 import Calendar from '@/components/Calendar';
+import ConsistencyWheel from '@/components/ConsistencyWheel';
 
 export default function Page() {
   const [entries, setEntries] = useState<DayEntry[]>([]);
@@ -82,7 +83,12 @@ export default function Page() {
     <div className="min-h-screen bg-gray-900 text-white">
       <div className="max-w-md mx-auto pb-20">
         {tab === 'home' && <Home today={today!} habits={habits} stats={stats} onToggle={toggleHabit} />}
-        {tab === 'stats' && <Stats stats={stats} />}
+        {tab === 'stats' && (
+          <>
+            <ConsistencyWheel data={entries} habits={habits} />
+            <Stats stats={stats} />
+          </>
+        )}
         {tab === 'calendar' && <Calendar entries={entries} />}
       </div>
 

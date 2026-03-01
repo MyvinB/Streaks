@@ -50,7 +50,7 @@ export async function getAllEntries(): Promise<DayEntry[]> {
   
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: `${SHEET_NAME}!A2:Z`,
+    range: `${SHEET_NAME}!A2:Y`,
   });
 
   const rows = response.data.values || [];
@@ -60,10 +60,12 @@ export async function getAllEntries(): Promise<DayEntry[]> {
       habitValues[habit.name] = parseInt(row[i + 1] || '0');
     });
     
+    const score = Object.values(habitValues).reduce((sum, val) => sum + val, 0);
+    
     return {
       date: row[0],
       habits: habitValues,
-      score: parseInt(row[habits.length + 1] || '0'),
+      score,
     };
   });
 }
@@ -103,11 +105,11 @@ export async function createDay(date: string) {
   const sheets = google.sheets({ version: 'v4', auth });
   const habits = await getHabits();
   
-  const values = [date, ...Array(habits.length).fill(0), `=SUM(B:${String.fromCharCode(65 + habits.length)})`];
+  const values = [date, ...Array(habits.length).fill(0)];
   
   await sheets.spreadsheets.values.append({
     spreadsheetId: SPREADSHEET_ID,
-    range: `${SHEET_NAME}!A:Z`,
+    range: `${SHEET_NAME}!A:Y`,
     valueInputOption: 'USER_ENTERED',
     requestBody: {
       values: [values],
