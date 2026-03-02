@@ -6,10 +6,19 @@ export function calculateHabitStreaks(entries: DayEntry[]): Record<string, numbe
 
   const habitNames = Object.keys(sorted[0].habits);
   const streaks: Record<string, number> = {};
+  const today = getTodayDate();
 
   habitNames.forEach((habit) => {
     let streak = 0;
+    let skipToday = false;
+    
     for (const entry of sorted) {
+      // Skip today if it's not completed yet
+      if (entry.date === today && entry.habits[habit] === 0) {
+        skipToday = true;
+        continue;
+      }
+      
       if (entry.habits[habit] === 1) {
         streak++;
       } else {
